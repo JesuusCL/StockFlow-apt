@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block title %}Movimientos de stock - StockPyme{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h4 mb-0">Historial de movimientos</h1>
+    <a href="{{ url_for('inventario.entrada') }}" class="btn btn-dark">Nueva entrada de stock</a>
+</div>
+
+<form method="GET" class="row g-2 mb-4">
+    <div class="col-md-4">
+        <select name="producto" class="form-select" onchange="this.form.submit()">
+            <option value="">Todos los productos</option>
+            {% for p in productos %}
+                <option value="{{ p.id_producto }}" {% if producto_id == p.id_producto %}selected{% endif %}>
+                    {{ p.nombre }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+</form>
+
+{% if movimientos.items %}
+<div class="table-responsive">
+    <table class="table align-middle bg-white">
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Producto</th>
+                <th>Tipo</th>
+                <th>Cantidad</th>
+                <th>Stock anterior</th>
+                <th>Stock posterior</th>
+                <th>Usuario</th>
+                <th>Motivo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for m in movimientos.items %}
+            <tr>
+                <td>{{ m.fecha.strftime('%d-%m-%Y %H:%M') }}</td>
+                <td>{{ m.producto.nombre }}</td>
+                <td>
+                    <span class="badge {{ 'bg-success' if m.tipo_movimiento == 'entrada' else 'bg-danger' }}">
+                        {{ m.tipo_movimiento | capitalize }}
+                    </span>
+                </td>
+                <td>{{ m.cantidad }}</td>
+                <td>{{ m.stock_anterior }}</td>
+                <td>{{ m.stock_posterior }}</td>
+                <td>{{ m.usuario.nombre_completo }}</td>
+                <td>{{ m.motivo or '-' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<nav>
+    <ul class="pagination">
+        {% if movimientos.pages > 1 %}
+            {% for num_pagina in movimientos.iter_pages() %}
+                {% if num_pagina %}
+                    <li class="page-item {% if num_pagina == movimientos.page %}active{% endif %}">
+                        <a class="page-link"
+                           href="{{ url_for('inventario.movimientos', pagina=num_pagina, producto=producto_id) }}">
+                            {{ num_pagina }}
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </ul>
+</nav>
+
+{% else %}
+<div class="text-center text-muted py-5">
+    <p class="mb-3">Aun no hay movimientos de stock registrados.</p>
+    <a href="{{ url_for('inventario.entrada') }}" class="btn btn-dark">Registrar la primera entrada</a>
+</div>
+{% endif %}
+{% endblock %}

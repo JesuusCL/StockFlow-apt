@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block title %}Ventas - StockPyme{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h4 mb-0">Ventas</h1>
+    <a href="{{ url_for('ventas.nueva') }}" class="btn btn-dark">Registrar venta</a>
+</div>
+
+<div class="btn-group mb-3" role="group">
+    <a href="{{ url_for('ventas.listar', rango='todos') }}"
+       class="btn btn-outline-dark {% if rango == 'todos' %}active{% endif %}">Todas</a>
+    <a href="{{ url_for('ventas.listar', rango='hoy') }}"
+       class="btn btn-outline-dark {% if rango == 'hoy' %}active{% endif %}">Hoy</a>
+    <a href="{{ url_for('ventas.listar', rango='7dias') }}"
+       class="btn btn-outline-dark {% if rango == '7dias' %}active{% endif %}">Ultimos 7 dias</a>
+    <a href="{{ url_for('ventas.listar', rango='mes') }}"
+       class="btn btn-outline-dark {% if rango == 'mes' %}active{% endif %}">Este mes</a>
+</div>
+
+<form method="GET" class="row g-2 mb-4 align-items-end">
+    <input type="hidden" name="rango" value="personalizado">
+    <div class="col-auto">
+        <label class="form-label small mb-0">Desde</label>
+        <input type="date" name="desde" class="form-control" value="{{ desde }}">
+    </div>
+    <div class="col-auto">
+        <label class="form-label small mb-0">Hasta</label>
+        <input type="date" name="hasta" class="form-control" value="{{ hasta }}">
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-outline-secondary">Filtrar por rango</button>
+    </div>
+</form>
+
+{% if ventas.items %}
+<div class="table-responsive">
+    <table class="table align-middle bg-white">
+        <thead>
+            <tr>
+                <th>Venta</th>
+                <th>Fecha</th>
+                <th>Usuario</th>
+                <th>Productos</th>
+                <th>Total</th>
+                <th>Estado</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for venta in ventas.items %}
+            <tr>
+                <td>#{{ '%04d' | format(venta.id_venta) }}</td>
+                <td>{{ venta.fecha.strftime('%d-%m-%Y %H:%M') }}</td>
+                <td>{{ venta.usuario.nombre_completo }}</td>
+                <td>{{ venta.cantidad_productos }}</td>
+                <td>${{ '%.2f' | format(venta.total) }}</td>
+                <td>
+                    <span class="badge {{ 'bg-success' if venta.estado == 'completada' else 'bg-secondary' }}">
+                        {{ venta.estado | capitalize }}
+                    </span>
+                </td>
+                <td class="text-end">
+                    <a href="{{ url_for('ventas.detalle', venta_id=venta.id_venta) }}"
+                       class="btn btn-sm btn-outline-secondary">Ver detalle</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<nav>
+    <ul class="pagination">
+        {% if ventas.pages > 1 %}
+            {% for num_pagina in ventas.iter_pages() %}
+                {% if num_pagina %}
+                    <li class="page-item {% if num_pagina == ventas.page %}active{% endif %}">
+                        <a class="page-link"
+                           href="{{ url_for('ventas.listar', pagina=num_pagina, rango=rango, desde=desde, hasta=hasta) }}">
+                            {{ num_pagina }}
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </ul>
+</nav>
+
+{% else %}
+<div class="text-center text-muted py-5">
+    <p class="mb-3">No se encontraron ventas en este rango.</p>
+    <a href="{{ url_for('ventas.nueva') }}" class="btn btn-dark">Registrar la primera venta</a>
+</div>
+{% endif %}
+{% endblock %}

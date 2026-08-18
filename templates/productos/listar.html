@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block title %}Productos - StockPyme{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h4 mb-0">Productos</h1>
+    <div class="d-flex gap-2">
+        <a href="{{ url_for('productos.categorias') }}" class="btn btn-outline-dark">Categorias</a>
+        <a href="{{ url_for('productos.crear') }}" class="btn btn-dark">Nuevo producto</a>
+    </div>
+</div>
+
+<form method="GET" class="row g-2 mb-4">
+    <div class="col-md-5">
+        <input type="text" name="q" class="form-control" placeholder="Buscar por nombre o SKU"
+               value="{{ busqueda }}">
+    </div>
+    <div class="col-md-3">
+        <select name="categoria" class="form-select">
+            <option value="">Todas las categorias</option>
+            {% for c in categorias %}
+                <option value="{{ c.id_categoria }}" {% if categoria_id == c.id_categoria %}selected{% endif %}>
+                    {{ c.nombre }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-3">
+        <select name="orden" class="form-select">
+            <option value="nombre" {% if orden == 'nombre' %}selected{% endif %}>Ordenar por nombre</option>
+            <option value="stock" {% if orden == 'stock' %}selected{% endif %}>Ordenar por stock</option>
+            <option value="precio" {% if orden == 'precio' %}selected{% endif %}>Ordenar por precio</option>
+        </select>
+    </div>
+    <div class="col-md-1">
+        <button type="submit" class="btn btn-outline-dark w-100">Filtrar</button>
+    </div>
+</form>
+
+{% if productos.items %}
+<div class="card">
+<div class="table-responsive">
+    <table class="table align-middle mb-0">
+        <thead>
+            <tr>
+                <th>SKU</th>
+                <th>Nombre</th>
+                <th>Categoria</th>
+                <th>Precio venta</th>
+                <th>Stock</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for producto in productos.items %}
+            <tr>
+                <td>{{ producto.sku }}</td>
+                <td>{{ producto.nombre }}</td>
+                <td>{{ producto.categoria.nombre if producto.categoria else '-' }}</td>
+                <td>${{ '%.2f' | format(producto.precio_venta) }}</td>
+                <td>
+                    {{ producto.stock_actual }}
+                    {% if producto.stock_bajo %}
+                        <span class="badge bg-warning text-dark ms-1">Stock bajo</span>
+                    {% endif %}
+                </td>
+                <td class="text-end">
+                    <a href="{{ url_for('productos.editar', producto_id=producto.id_producto) }}"
+                       class="btn btn-sm btn-outline-secondary">Editar</a>
+                    <form method="POST"
+                          action="{{ url_for('productos.eliminar', producto_id=producto.id_producto) }}"
+                          class="d-inline"
+                          onsubmit="return confirm('Eliminar este producto?');">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</div>
+
+<nav>
+    <ul class="pagination">
+        {% if productos.pages > 1 %}
+            {% for num_pagina in productos.iter_pages() %}
+                {% if num_pagina %}
+                    <li class="page-item {% if num_pagina == productos.page %}active{% endif %}">
+                        <a class="page-link"
+                           href="{{ url_for('productos.listar', pagina=num_pagina, q=busqueda, categoria=categoria_id, orden=orden) }}">
+                            {{ num_pagina }}
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </ul>
+</nav>
+
+{% else %}
+<div class="text-center text-muted py-5">
+    <p class="mb-3">No se encontraron productos.</p>
+    <a href="{{ url_for('productos.crear') }}" class="btn btn-dark">Crear el primer producto</a>
+</div>
+{% endif %}
+{% endblock %}

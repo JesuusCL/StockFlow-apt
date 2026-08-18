@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Editar' if modo == 'editar' else 'Nuevo' }} producto - StockPyme{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <h1 class="h4 mb-4">{{ 'Editar producto' if modo == 'editar' else 'Nuevo producto' }}</h1>
+
+                <form method="POST" novalidate>
+                    {{ form.hidden_tag() }}
+
+                    <div class="mb-3">
+                        {{ form.nombre.label(class="form-label") }}
+                        {{ form.nombre(class="form-control" + (" is-invalid" if form.nombre.errors else "")) }}
+                        {% for error in form.nombre.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.descripcion.label(class="form-label") }}
+                        {{ form.descripcion(class="form-control", rows=3) }}
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.sku.label(class="form-label") }}
+                            {{ form.sku(class="form-control" + (" is-invalid" if form.sku.errors else "")) }}
+                            {% for error in form.sku.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.id_categoria.label(class="form-label") }}
+                            {{ form.id_categoria(class="form-select") }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.precio_compra.label(class="form-label") }}
+                            {{ form.precio_compra(class="form-control" + (" is-invalid" if form.precio_compra.errors else "")) }}
+                            {% for error in form.precio_compra.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.precio_venta.label(class="form-label") }}
+                            {{ form.precio_venta(class="form-control" + (" is-invalid" if form.precio_venta.errors else "")) }}
+                            {% for error in form.precio_venta.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        {{ form.stock_minimo.label(class="form-label") }}
+                        {{ form.stock_minimo(class="form-control" + (" is-invalid" if form.stock_minimo.errors else "")) }}
+                        {% for error in form.stock_minimo.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                        <div class="form-text">Se genera una alerta cuando el stock llegue a este valor o menos.</div>
+                    </div>
+
+                    {% if modo == 'editar' %}
+                        <p class="text-muted small">Stock actual: {{ producto.stock_actual }}
+                            (se administra desde el modulo de inventario, Fase 7)</p>
+                    {% endif %}
+
+                    <div class="d-flex gap-2">
+                        {{ form.submit(class="btn btn-dark") }}
+                        <a href="{{ url_for('productos.listar') }}" class="btn btn-outline-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

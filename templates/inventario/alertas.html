@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Alertas de stock - StockPyme{% endblock %}
+
+{% block content %}
+<h1 class="h4 mb-4">Alertas de stock bajo</h1>
+
+{% if productos %}
+<div class="table-responsive">
+    <table class="table align-middle bg-white">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>SKU</th>
+                <th>Stock actual</th>
+                <th>Stock minimo</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for producto in productos %}
+            <tr>
+                <td>
+                    <span class="text-warning">&#9888;</span>
+                    {{ producto.nombre }}
+                </td>
+                <td>{{ producto.sku }}</td>
+                <td>{{ producto.stock_actual }}</td>
+                <td>{{ producto.stock_minimo }}</td>
+                <td class="text-end">
+                    <a href="{{ url_for('inventario.entrada') }}" class="btn btn-sm btn-dark">Reponer stock</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="text-center text-muted py-5">
+    <p>No hay productos con stock bajo en este momento.</p>
+</div>
+{% endif %}
+{% endblock %}

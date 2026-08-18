@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Acceso no autorizado{% endblock %}
+
+{% block content %}
+<div class="empty-state">
+    <h1 class="h4 mb-2">Acceso no autorizado</h1>
+    <p>No tienes permiso para acceder a este recurso.</p>
+    <a href="{{ url_for('dashboard.index') }}" class="btn btn-dark mt-2">Volver al dashboard</a>
+</div>
+{% endblock %}

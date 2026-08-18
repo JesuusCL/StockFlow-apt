@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}Crear cuenta - StockPyme{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    {% with mensajes = get_flashed_messages(with_categories=true) %}
+        {% if mensajes %}
+            {% for categoria, mensaje in mensajes %}
+                <div class="alert alert-{{ categoria }} alert-dismissible fade show" role="alert">
+                    {{ mensaje }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <h1 class="h4 mb-4">Crear cuenta</h1>
+
+                <form method="POST" novalidate>
+                    {{ form.hidden_tag() }}
+
+                    <div class="mb-3">
+                        {{ form.nombre_completo.label(class="form-label") }}
+                        {{ form.nombre_completo(class="form-control" + (" is-invalid" if form.nombre_completo.errors else "")) }}
+                        {% for error in form.nombre_completo.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.nombre_usuario.label(class="form-label") }}
+                        {{ form.nombre_usuario(class="form-control" + (" is-invalid" if form.nombre_usuario.errors else "")) }}
+                        {% for error in form.nombre_usuario.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.correo.label(class="form-label") }}
+                        {{ form.correo(class="form-control" + (" is-invalid" if form.correo.errors else "")) }}
+                        {% for error in form.correo.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.password.label(class="form-label") }}
+                        {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else "")) }}
+                        {% for error in form.password.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.confirmar_password.label(class="form-label") }}
+                        {{ form.confirmar_password(class="form-control" + (" is-invalid" if form.confirmar_password.errors else "")) }}
+                        {% for error in form.confirmar_password.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    {{ form.submit(class="btn btn-dark w-100") }}
+                </form>
+
+                <p class="text-center mt-3 mb-0">
+                    Ya tienes cuenta? <a href="{{ url_for('auth.login') }}">Iniciar sesion</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

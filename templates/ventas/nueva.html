@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block title %}Nueva venta - StockPyme{% endblock %}
+
+{% block content %}
+<h1 class="h4 mb-4">Registrar venta</h1>
+
+<form method="POST" id="form-venta">
+    {{ form.hidden_tag() }}
+
+    <div class="table-responsive mb-3">
+        <table class="table bg-white align-middle" id="tabla-venta">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th style="width: 120px;">Cantidad</th>
+                    <th style="width: 140px;">Precio unitario</th>
+                    <th style="width: 140px;">Subtotal</th>
+                    <th style="width: 50px;"></th>
+                </tr>
+            </thead>
+            <tbody id="cuerpo-tabla-venta"></tbody>
+        </table>
+    </div>
+
+    <button type="button" id="btn-agregar-fila" class="btn btn-outline-dark mb-4">
+        + Agregar producto
+    </button>
+
+    <div class="card shadow-sm mb-4" style="max-width: 320px;">
+        <div class="card-body d-flex justify-content-between">
+            <span class="fw-bold">Total</span>
+            <span class="fw-bold" id="total-venta">$0.00</span>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-dark">Registrar venta</button>
+        <a href="{{ url_for('ventas.listar') }}" class="btn btn-outline-secondary">Cancelar</a>
+    </div>
+</form>
+
+<!-- Plantilla oculta con los datos de productos disponibles, para clonar filas con JS -->
+<template id="plantilla-fila">
+    <tr>
+        <td>
+            <select name="producto_id[]" class="form-select select-producto" required>
+                <option value="">Selecciona un producto</option>
+                {% for p in productos %}
+                    <option value="{{ p.id_producto }}"
+                            data-precio="{{ p.precio_venta }}"
+                            data-stock="{{ p.stock_actual }}">
+                        {{ p.nombre }} (stock: {{ p.stock_actual }})
+                    </option>
+                {% endfor %}
+            </select>
+        </td>
+        <td><input type="number" name="cantidad[]" class="form-control input-cantidad" min="1" value="1" required></td>
+        <td class="precio-unitario">$0.00</td>
+        <td class="subtotal-fila">$0.00</td>
+        <td><button type="button" class="btn btn-sm btn-outline-danger btn-quitar-fila">&times;</button></td>
+    </tr>
+</template>
+
+<script>
+const cuerpoTabla = document.getElementById('cuerpo-tabla-venta');
+const plantilla = document.getElementById('plantilla-fila');
+const totalVentaEl = document.getElementById('total-venta');
+
+function formatearMoneda(valor) {
+    return '$' + valor.toFixed(2);
+}
+
+function recalcularFila(fila) {
+    const select = fila.querySelector('.select-producto');
+    const cantidadInput = fila.querySelector('.input-cantidad');
+    const opcion = select.options[select.selectedIndex];
+    const precio = opcion ? parseFloat(opcion.dataset.precio || 0) : 0;
+    const cantidad = parseInt(cantidadInput.value || 0, 10);
+    const subtotal = precio * cantidad;
+
+    fila.querySelector('.precio-unitario').textContent = formatearMoneda(precio);
+    fila.querySelector('.subtotal-fila').textContent = formatearMoneda(subtotal);
+    return subtotal;
+}
+
+function recalcularTotal() {
+    let total = 0;
+    cuerpoTabla.querySelectorAll('tr').forEach(fila => {
+        total += recalcularFila(fila);
+    });
+    totalVentaEl.textContent = formatearMoneda(total);
+}
+
+function agregarFila() {
+    const nodo = plantilla.content.cloneNode(true);
+    const fila = nodo.querySelector('tr');
+
+    fila.querySelector('.select-producto').addEventListener('change', recalcularTotal);
+    fila.querySelector('.input-cantidad').addEventListener('input', recalcularTotal);
+    fila.querySelector('.btn-quitar-fila').addEventListener('click', () => {
+        fila.remove();
+        recalcularTotal();
+    });
+
+    cuerpoTabla.appendChild(fila);
+}
+
+document.getElementById('btn-agregar-fila').addEventListener('click', agregarFila);
+
+// Primera fila visible desde el inicio
+agregarFila();
+</script>
+{% endblock %}

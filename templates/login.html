@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Iniciar sesion - StockFlow{% endblock %}
+
+{% block content %}
+<div class="auth-split">
+
+    <div class="auth-split-form">
+        <div class="auth-form-wrapper">
+            <div class="auth-brand">
+                <img src="{{ url_for('static', filename='img/logo.png') }}" class="brand-logo" alt="StockFlow"> StockFlow
+            </div>
+
+            {% with mensajes = get_flashed_messages(with_categories=true) %}
+                {% if mensajes %}
+                    {% for categoria, mensaje in mensajes %}
+                        <div class="alert alert-{{ categoria }} alert-dismissible fade show" role="alert">
+                            {{ mensaje }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <h1 class="h4 mb-4">Iniciar sesion</h1>
+
+            <form method="POST" novalidate>
+                {{ form.hidden_tag() }}
+
+                <div class="mb-3">
+                    {{ form.correo.label(class="form-label") }}
+                    {{ form.correo(class="form-control" + (" is-invalid" if form.correo.errors else "")) }}
+                    {% for error in form.correo.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.password.label(class="form-label") }}
+                    {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else "")) }}
+                    {% for error in form.password.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                {{ form.submit(class="btn btn-dark w-100") }}
+            </form>
+
+            <p class="text-center mt-3 mb-0">
+                <a href="{{ url_for('auth.recuperar_password') }}">Olvidaste tu contrasena?</a>
+            </p>
+            <a href="{{ url_for('auth.registro') }}" class="btn btn-accent w-100 mt-3">Crear cuenta</a>
+        </div>
+    </div>
+
+    <div class="auth-split-showcase">
+        <div class="auth-showcase-card">
+            <img src="{{ url_for('static', filename='img/login_showcase.png') }}"
+                 alt="Panel de control de StockFlow" class="auth-showcase-image">
+        </div>
+    </div>
+
+</div>
+{% endblock %}

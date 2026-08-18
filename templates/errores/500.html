@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Error del servidor{% endblock %}
+
+{% block content %}
+<div class="empty-state">
+    <h1 class="h4 mb-2">Ocurrio un error inesperado</h1>
+    <p>El equipo tecnico ya fue notificado. Intenta nuevamente en unos minutos.</p>
+    <a href="{{ url_for('dashboard.index') if current_user.is_authenticated else url_for('auth.login') }}"
+       class="btn btn-dark mt-2">
+        Volver
+    </a>
+</div>
+{% endblock %}
