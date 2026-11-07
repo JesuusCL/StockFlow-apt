@@ -73,6 +73,98 @@
     </div>
 </div>
 
+<div class="row g-3 mt-1">
+    <div class="col-12">
+        <div class="card shadow-sm actividad-panel">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h2 class="h6 mb-0">
+                        Actividad reciente
+                        <span class="actividad-live" title="Se actualiza automaticamente">
+                            <span class="actividad-live-dot"></span> En vivo
+                        </span>
+                    </h2>
+                    <a href="{{ url_for('ventas.listar') }}" class="small">Ver historial</a>
+                </div>
+
+                <ul class="actividad-lista" id="actividadLista"
+                    data-url="{{ url_for('dashboard.actividad_reciente') }}"
+                    data-detalle-url="{{ url_for('ventas.detalle', venta_id=0) }}">
+                    {% for v in actividad %}
+                    <li class="actividad-item" data-id="{{ v.id }}">
+                        <a class="actividad-link" href="{{ url_for('ventas.detalle', venta_id=v.id) }}">
+                            <div class="actividad-info">
+                                <p class="actividad-titulo">{{ v.titulo }}</p>
+                                <p class="actividad-meta">{{ v.fecha }} &middot; {{ v.unidades }} {{ 'unidad' if v.unidades == 1 else 'unidades' }}</p>
+                            </div>
+                            <div class="actividad-lado">
+                                <p class="actividad-total">{{ v.total }}</p>
+                                <span class="actividad-estado actividad-estado-{{ v.estado }}">{{ v.estado | capitalize }}</span>
+                            </div>
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <p class="text-muted small mb-0 {% if actividad %}d-none{% endif %}" id="actividadVacia">
+                    Aun no hay ventas registradas.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mt-1">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="h6 mb-1">Actividad comercial semanal</h2>
+                <p class="text-muted small mb-3">
+                    Intensidad de ventas por dia y horario &middot; ultimas {{ mapa_calor.semanas }} semanas
+                </p>
+
+                <div class="calor-scroll">
+                    <div class="calor-grid" role="table" aria-label="Mapa de calor de ventas por dia y horario">
+                        <div class="calor-cabecera" role="row">
+                            <span class="calor-etiqueta-fila" role="columnheader">Horario</span>
+                            {% for dia in mapa_calor.dias %}
+                            <span class="calor-dia" role="columnheader">{{ dia }}</span>
+                            {% endfor %}
+                        </div>
+                        {% for fila in mapa_calor.filas %}
+                        <div class="calor-fila" role="row">
+                            <span class="calor-etiqueta-fila" role="rowheader">{{ fila.franja }}</span>
+                            {% for celda in fila.celdas %}
+                            <span class="calor-celda calor-nivel-{{ celda.nivel }}" role="cell"
+                                  title="{{ celda.titulo }}" aria-label="{{ celda.titulo }}"></span>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-3">
+                    <p class="text-muted small mb-0">
+                        {% if mapa_calor.hay_ventas %}
+                            Pasa el mouse sobre un cuadro para ver el monto y la cantidad de ventas.
+                        {% else %}
+                            Aun no hay ventas en este periodo.
+                        {% endif %}
+                    </p>
+                    <div class="calor-leyenda">
+                        <span>Menor</span>
+                        <span class="calor-muestra calor-nivel-1"></span>
+                        <span class="calor-muestra calor-nivel-2"></span>
+                        <span class="calor-muestra calor-nivel-3"></span>
+                        <span class="calor-muestra calor-nivel-4"></span>
+                        <span class="calor-muestra calor-nivel-5"></span>
+                        <span>Mayor</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <script>
     const ctx = document.getElementById('graficoVentas');
@@ -96,4 +188,5 @@
         }
     });
 </script>
+<script src="{{ url_for('static', filename='js/actividad_reciente.js') }}" defer></script>
 {% endblock %}

@@ -205,3 +205,198 @@
     background-color: #dc3545;
     border-color: #dc3545;
 }
+
+/* ------------------------------------------------------------
+   Dashboard: panel "Actividad reciente"
+   ------------------------------------------------------------ */
+.actividad-live {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-left: 0.5rem;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--color-accent);
+    vertical-align: middle;
+}
+
+.actividad-live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--color-accent);
+    animation: actividad-pulso 1.6s ease-in-out infinite;
+}
+
+@keyframes actividad-pulso {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(47, 95, 224, 0.5); }
+    50%      { opacity: 0.6; box-shadow: 0 0 0 5px rgba(47, 95, 224, 0); }
+}
+
+.actividad-lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.actividad-item + .actividad-item {
+    border-top: 1px solid var(--color-border);
+}
+
+.actividad-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.9rem 0.5rem;
+    color: inherit;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.15s ease;
+}
+
+.actividad-link:hover {
+    background-color: var(--color-accent-soft);
+    color: inherit;
+}
+
+.actividad-info,
+.actividad-lado {
+    min-width: 0;
+}
+
+.actividad-lado {
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.actividad-titulo {
+    margin: 0 0 0.2rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.actividad-meta {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--color-ink-muted);
+}
+
+.actividad-total {
+    margin: 0 0 0.3rem;
+    font-weight: 700;
+    color: var(--color-sidebar);
+}
+
+.actividad-estado {
+    display: inline-block;
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.actividad-estado-completada {
+    background-color: #e3f6ea;
+    color: #1e7a45;
+}
+
+.actividad-estado-anulada {
+    background-color: #fbe6e3;
+    color: var(--color-danger);
+}
+
+/* Venta recien llegada: se resalta y se desvanece */
+.actividad-nueva .actividad-link {
+    animation: actividad-entrada 2.5s ease-out;
+}
+
+@keyframes actividad-entrada {
+    0%   { background-color: rgba(47, 95, 224, 0.22); transform: translateX(-6px); }
+    20%  { transform: translateX(0); }
+    100% { background-color: transparent; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .actividad-live-dot,
+    .actividad-nueva .actividad-link {
+        animation: none;
+    }
+}
+
+/* ------------------------------------------------------------
+   Dashboard: mapa de calor "Actividad comercial semanal"
+   Escala del azul del sistema: claro, azul fuerte, azul oscuro
+   ------------------------------------------------------------ */
+.calor-scroll {
+    overflow-x: auto;
+}
+
+.calor-grid {
+    min-width: 520px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.calor-cabecera,
+.calor-fila {
+    display: grid;
+    grid-template-columns: 64px repeat(7, 1fr);
+    gap: 6px;
+    align-items: center;
+}
+
+.calor-dia {
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--color-sidebar);
+}
+
+.calor-etiqueta-fila {
+    font-size: 0.8rem;
+    color: var(--color-ink-muted);
+    white-space: nowrap;
+}
+
+.calor-celda {
+    height: 34px;
+    border-radius: 7px;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.calor-celda:hover {
+    transform: scale(1.06);
+    box-shadow: 0 4px 10px rgba(22, 35, 62, 0.25);
+    position: relative;
+    z-index: 1;
+}
+
+.calor-nivel-0 { background-color: #f1f4fb; border: 1px dashed #d3dcf0; }
+.calor-nivel-1 { background-color: #dbe5fc; }
+.calor-nivel-2 { background-color: #a9c0f6; }
+.calor-nivel-3 { background-color: #6f93ec; }
+.calor-nivel-4 { background-color: var(--color-accent); }
+.calor-nivel-5 { background-color: #1c3f9e; }
+
+.calor-leyenda {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.8rem;
+    color: var(--color-ink-muted);
+}
+
+.calor-muestra {
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .calor-celda { transition: none; }
+    .calor-celda:hover { transform: none; }
+}

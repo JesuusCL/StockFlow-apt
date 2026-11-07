@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for
+from flask import Blueprint, render_template, redirect, url_for, jsonify
 from flask_login import login_required, current_user
 
 from services import dashboard_service, producto_service
@@ -17,6 +17,8 @@ def index():
     resumen = dashboard_service.obtener_resumen(empresa_id)
     etiquetas_ventas, valores_ventas = dashboard_service.ventas_ultimos_dias(empresa_id)
     productos_bajo = producto_service.productos_con_stock_bajo(empresa_id)
+    actividad = dashboard_service.ventas_recientes(empresa_id)
+    mapa_calor = dashboard_service.mapa_calor_ventas(empresa_id)
 
     return render_template(
         'dashboard.html',
@@ -24,4 +26,17 @@ def index():
         etiquetas_ventas=etiquetas_ventas,
         valores_ventas=valores_ventas,
         productos_bajo=productos_bajo,
+        actividad=actividad,
+        mapa_calor=mapa_calor,
     )
+
+
+@dashboard_bp.route('/dashboard/actividad')
+@login_required
+def actividad_reciente():
+    """JSON con las ultimas ventas; el dashboard lo consulta cada pocos
+    segundos para actualizar el panel de actividad reciente sin recargar."""
+    if current_user.empresa is None:
+        return jsonify({'ventas': []})
+
+    return jsonify({'ventas': dashboard_service.ventas_recientes(current_user.empresa.id_empresa)})
