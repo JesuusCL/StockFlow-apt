@@ -8,3 +8,5 @@ instance/
 .vscode/
 .idea/
 *.log
+
+.venv/

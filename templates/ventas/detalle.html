@@ -41,15 +41,15 @@
             <tr>
                 <td>{{ detalle.producto.nombre }}</td>
                 <td>{{ detalle.cantidad }}</td>
-                <td>${{ '%.2f' | format(detalle.precio_unitario) }}</td>
-                <td>${{ '%.2f' | format(detalle.subtotal) }}</td>
+                <td>{{ detalle.precio_unitario | clp }}</td>
+                <td>{{ detalle.subtotal | clp }}</td>
             </tr>
             {% endfor %}
         </tbody>
         <tfoot>
             <tr>
                 <td colspan="3" class="text-end fw-bold">Total</td>
-                <td class="fw-bold">${{ '%.2f' | format(venta.total) }}</td>
+                <td class="fw-bold">{{ venta.total | clp }}</td>
             </tr>
         </tfoot>
     </table>

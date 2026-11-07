@@ -1,6 +1,7 @@
 from flask import Flask, render_template, session
 from flask_login import LoginManager
 from flask_wtf import CSRFProtect
+from services.formato_service import formato_clp
 
 from config import Config
 from database.db import db
@@ -15,6 +16,7 @@ def create_app(config_class=Config):
 
     # Inicializacion de extensiones
     db.init_app(app)
+    app.add_template_filter(formato_clp, 'clp')
     login_manager.init_app(app)
     csrf.init_app(app)
 

@@ -54,7 +54,7 @@
                 <td>{{ venta.fecha.strftime('%d-%m-%Y %H:%M') }}</td>
                 <td>{{ venta.usuario.nombre_completo }}</td>
                 <td>{{ venta.cantidad_productos }}</td>
-                <td>${{ '%.2f' | format(venta.total) }}</td>
+                <td>{{ venta.total | clp }}</td>
                 <td>
                     <span class="badge {{ 'bg-success' if venta.estado == 'completada' else 'bg-secondary' }}">
                         {{ venta.estado | capitalize }}

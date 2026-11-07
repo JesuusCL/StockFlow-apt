@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Carga masiva de productos{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">Carga masiva de productos</h1>
+    <a href="{{ url_for('productos.carga_masiva_historial') }}" class="btn btn-outline-dark">Ver historial</a>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="h5 mb-3">Subir archivo</h2>
+                <form method="POST" enctype="multipart/form-data" novalidate>
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ form.archivo.label(class="form-label") }}
+                        {{ form.archivo(class="form-control") }}
+                        {% for error in form.archivo.errors %}
+                            <div class="text-danger small mt-1">{{ error }}</div>
+                        {% endfor %}
+                        <div class="form-text">Formatos aceptados: .csv o .xlsx</div>
+                    </div>
+                    <button type="submit" class="btn btn-dark">Cargar productos</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="h5 mb-3">Antes de cargar</h2>
+                <p class="mb-2">El archivo debe tener estas columnas exactas en la primera fila:</p>
+                <p class="mb-3">
+                    <code>nombre, sku, categoria, descripcion, precio_compra, precio_venta, stock_inicial, stock_minimo</code>
+                </p>
+                <ul class="small mb-4">
+                    <li><strong>nombre</strong> y <strong>sku</strong> son obligatorios.</li>
+                    <li><strong>categoria</strong> es opcional; si no existe, se crea automáticamente.</li>
+                    <li><strong>descripcion</strong> es opcional.</li>
+                    <li><strong>stock_inicial</strong> y <strong>stock_minimo</strong> son opcionales (por defecto 0 y 5).</li>
+                    <li>El precio de venta no puede ser menor al de compra.</li>
+                </ul>
+                <a href="{{ url_for('productos.carga_masiva_plantilla') }}" class="btn btn-outline-dark w-100">
+                    Descargar plantilla Excel
+                </a>
+                <div class="form-text mt-2">
+                    La plantilla incluye una columna de <strong>ganancia</strong> calculada automáticamente
+                    (solo de referencia; no se sube al sistema) y una hoja de instrucciones.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

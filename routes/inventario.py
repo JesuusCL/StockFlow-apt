@@ -1,7 +1,7 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request, abort
+from flask import Blueprint, render_template, redirect, url_for, flash, request, abort, jsonify
 from flask_login import login_required, current_user
 
-from services import inventario_service, producto_service
+from services import inventario_service, producto_service, alertas_stock_service
 from forms.inventario_forms import EntradaStockForm
 
 inventario_bp = Blueprint('inventario', __name__)
@@ -80,3 +80,30 @@ def alertas():
 
     productos_bajo = producto_service.productos_con_stock_bajo(empresa_id)
     return render_template('inventario/alertas.html', productos=productos_bajo)
+
+
+@inventario_bp.route('/alertas/estado')
+@login_required
+def alertas_estado():
+    """
+    Lo consulta el aviso de "Stock bajo" de la pagina (JavaScript, cada 5 minutos).
+    Devuelve cuantos productos estan bajo el minimo y, ademas, dispara el correo
+    de alerta (maximo 1 por hora por empresa, ver config.py).
+    """
+    empresa = current_user.empresa
+    if empresa is None:
+        return jsonify(count=0, productos=[])
+
+    productos_bajo = producto_service.productos_con_stock_bajo(empresa.id_empresa)
+    alertas_stock_service.notificar_por_correo_si_corresponde(current_user, empresa, productos_bajo)
+
+    respuesta = jsonify(
+        count=len(productos_bajo),
+        productos=[
+            {'nombre': p.nombre, 'stock_actual': p.stock_actual, 'stock_minimo': p.stock_minimo}
+            for p in productos_bajo[:5]
+        ],
+        url_alertas=url_for('inventario.alertas'),
+    )
+    respuesta.headers['Cache-Control'] = 'no-store'
+    return respuesta

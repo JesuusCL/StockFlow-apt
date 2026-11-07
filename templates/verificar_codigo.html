@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}Verificar codigo - StockFlow{% endblock %}
+
+{% block content %}
+<div class="auth-split">
+
+    <div class="auth-split-form">
+        <div class="auth-form-wrapper">
+            <div class="auth-brand">
+                <img src="{{ url_for('static', filename='img/logo.png') }}" class="brand-logo" alt="StockFlow"> StockFlow
+            </div>
+
+            {% with mensajes = get_flashed_messages(with_categories=true) %}
+                {% if mensajes %}
+                    {% for categoria, mensaje in mensajes %}
+                        <div class="alert alert-{{ categoria }} alert-dismissible fade show" role="alert">
+                            {{ mensaje }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <h1 class="h4 mb-2">Verifica tu identidad</h1>
+            <p class="text-muted mb-4">
+                Enviamos un codigo de 6 digitos a <strong>{{ correo_enmascarado }}</strong>.
+                Vence en {{ minutos_vigencia }} minutos.
+            </p>
+
+            <form method="POST" action="{{ url_for('auth.verificar_codigo') }}" novalidate>
+                {{ form.hidden_tag() }}
+
+                <div class="mb-3">
+                    {{ form.codigo.label(class="form-label") }}
+                    {{ form.codigo(class="form-control form-control-lg text-center" + (" is-invalid" if form.codigo.errors else ""),
+                                   inputmode="numeric", autocomplete="one-time-code", maxlength="6",
+                                   autofocus=true, placeholder="000000",
+                                   style="letter-spacing: 0.5rem; font-weight: 600;") }}
+                    {% for error in form.codigo.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                {{ form.submit(class="btn btn-dark w-100") }}
+            </form>
+
+            <form method="POST" action="{{ url_for('auth.reenviar_codigo') }}" class="mt-3">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-outline-dark w-100"
+                        {% if segundos_reenvio > 0 %}title="Disponible en {{ segundos_reenvio }} segundos"{% endif %}>
+                    Reenviar codigo
+                </button>
+            </form>
+
+            <p class="text-center mt-3 mb-0">
+                <a href="{{ url_for('auth.cancelar_verificacion') }}">Volver a iniciar sesion</a>
+            </p>
+        </div>
+    </div>
+
+    <div class="auth-split-showcase">
+        <div class="auth-showcase-card">
+            <img src="{{ url_for('static', filename='img/login_showcase.png') }}"
+                 alt="Panel de control de StockFlow" class="auth-showcase-image">
+        </div>
+    </div>
+
+</div>
+{% endblock %}

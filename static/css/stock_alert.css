@@ -1,0 +1,47 @@
+/* Aviso de "Stock bajo" - abajo a la derecha */
+.stock-toast {
+    position: fixed;
+    right: 1.25rem;
+    bottom: 1.25rem;
+    z-index: 1080;
+    width: 22rem;
+    max-width: calc(100vw - 2.5rem);
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-left: 5px solid #f59f00;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.18);
+    font-size: 0.9rem;
+    animation: stock-toast-entrada 0.25s ease-out;
+}
+
+.stock-toast-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 0.85rem 0.2rem;
+    color: #16233E;
+}
+
+.stock-toast-close {
+    border: 0;
+    background: transparent;
+    font-size: 1.4rem;
+    line-height: 1;
+    color: #868e96;
+    cursor: pointer;
+}
+
+.stock-toast-close:hover {
+    color: #343a40;
+}
+
+.stock-toast-body {
+    padding: 0 0.85rem 0.75rem;
+    color: #495057;
+}
+
+@keyframes stock-toast-entrada {
+    from { opacity: 0; transform: translateY(0.75rem); }
+    to   { opacity: 1; transform: translateY(0); }
+}

@@ -1,20 +1,24 @@
 {% extends 'base.html' %}
-{% block title %}{{ 'Editar' if modo == 'editar' else 'Nuevo' }} producto - StockPyme{% endblock %}
+{% block title %}{{ 'Editar producto' if modo == 'editar' else 'Nuevo producto' }} - StockFlow{% endblock %}
+
+{% block main_class %}app-content-navy{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-7">
-        <div class="card shadow-sm">
-            <div class="card-body p-4">
+    <div class="col-lg-7">
+        <div class="card card-3d">
+            <div class="card-body">
                 <h1 class="h4 mb-4">{{ 'Editar producto' if modo == 'editar' else 'Nuevo producto' }}</h1>
 
-                <form method="POST" novalidate>
+                <form method="POST" enctype="multipart/form-data" novalidate>
                     {{ form.hidden_tag() }}
 
                     <div class="mb-3">
                         {{ form.nombre.label(class="form-label") }}
                         {{ form.nombre(class="form-control" + (" is-invalid" if form.nombre.errors else "")) }}
-                        {% for error in form.nombre.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                        {% for error in form.nombre.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
                     </div>
 
                     <div class="mb-3">
@@ -22,11 +26,31 @@
                         {{ form.descripcion(class="form-control", rows=3) }}
                     </div>
 
+                    <div class="mb-3">
+                        {{ form.imagen.label(class="form-label") }}
+                        {{ form.imagen(class="form-control" + (" is-invalid" if form.imagen.errors else "")) }}
+                        {% for error in form.imagen.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+
+                        {% if modo == 'editar' and producto.imagen %}
+                            <div class="mt-2 d-flex align-items-center gap-2">
+                                <img src="{{ url_for('static', filename='uploads/productos/' + producto.imagen) }}"
+                                     alt="{{ producto.nombre }}" class="formulario-imagen-actual">
+                                <div class="form-text mb-0">
+                                    Foto actual. Sube un archivo nuevo solo si quieres reemplazarla.
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             {{ form.sku.label(class="form-label") }}
                             {{ form.sku(class="form-control" + (" is-invalid" if form.sku.errors else "")) }}
-                            {% for error in form.sku.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                            {% for error in form.sku.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
                         </div>
                         <div class="col-md-6 mb-3">
                             {{ form.id_categoria.label(class="form-label") }}
@@ -38,30 +62,33 @@
                         <div class="col-md-6 mb-3">
                             {{ form.precio_compra.label(class="form-label") }}
                             {{ form.precio_compra(class="form-control" + (" is-invalid" if form.precio_compra.errors else "")) }}
-                            {% for error in form.precio_compra.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                            {% for error in form.precio_compra.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
                         </div>
                         <div class="col-md-6 mb-3">
                             {{ form.precio_venta.label(class="form-label") }}
                             {{ form.precio_venta(class="form-control" + (" is-invalid" if form.precio_venta.errors else "")) }}
-                            {% for error in form.precio_venta.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                            {% for error in form.precio_venta.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
                         </div>
                     </div>
 
-                    <div class="mb-4">
+                    <div class="mb-3">
                         {{ form.stock_minimo.label(class="form-label") }}
                         {{ form.stock_minimo(class="form-control" + (" is-invalid" if form.stock_minimo.errors else "")) }}
-                        {% for error in form.stock_minimo.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
-                        <div class="form-text">Se genera una alerta cuando el stock llegue a este valor o menos.</div>
+                        {% for error in form.stock_minimo.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                        {% if modo == 'editar' %}
+                            <div class="form-text">Stock actual: {{ producto.stock_actual }} (se ajusta desde Inventario, no aqui).</div>
+                        {% endif %}
                     </div>
 
-                    {% if modo == 'editar' %}
-                        <p class="text-muted small">Stock actual: {{ producto.stock_actual }}
-                            (se administra desde el modulo de inventario, Fase 7)</p>
-                    {% endif %}
-
-                    <div class="d-flex gap-2">
-                        {{ form.submit(class="btn btn-dark") }}
+                    <div class="d-flex gap-2 justify-content-end">
                         <a href="{{ url_for('productos.listar') }}" class="btn btn-outline-secondary">Cancelar</a>
+                        {{ form.submit(class="btn btn-dark") }}
                     </div>
                 </form>
             </div>

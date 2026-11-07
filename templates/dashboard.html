@@ -9,7 +9,7 @@
         <div class="card shadow-sm h-100">
             <div class="card-body">
                 <p class="text-muted mb-1 small">Ventas del dia</p>
-                <p class="h4 mb-0">${{ '%.2f' | format(resumen.ventas_hoy) }}</p>
+                <p class="h4 mb-0">{{ resumen.ventas_hoy | clp }}</p>
             </div>
         </div>
     </div>

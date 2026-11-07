@@ -385,3 +385,96 @@ a:hover {
         display: none;
     }
 }
+
+
+/* ============================================================
+   StockFlow - Estilos nuevos: tarjetas de productos + pie de pagina
+   ============================================================
+   IMPORTANTE: este NO es un archivo nuevo para usar solo.
+   Copia todo el contenido de este archivo y pegalo al FINAL de tu
+   archivo existente: static/css/styles.css
+   (no reemplaces tu archivo styles.css completo, solo agrega esto al final)
+   ============================================================ */
+
+/* --- Tarjetas de productos (apartado Productos) --- */
+
+.producto-card {
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.producto-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.1) !important;
+}
+
+.producto-card-img {
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+    background-color: #f1f3f5;
+}
+
+.producto-card-img-placeholder {
+    width: 100%;
+    height: 170px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f1f3f5;
+    color: #adb5bd;
+    font-size: 0.9rem;
+}
+
+.producto-card-precio {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #16233E;
+}
+
+.formulario-imagen-actual {
+    max-width: 120px;
+    max-height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* --- Pie de pagina --- */
+
+.app-footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    background-color: #ffffff;
+    padding: 1rem 1.5rem;
+    margin-top: auto;
+}
+
+.app-footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem 1.5rem;
+    font-size: 0.85rem;
+    color: #495057;
+}
+
+.app-footer-brand strong {
+    color: #16233E;
+}
+
+.app-footer-tagline {
+    margin-left: 0.5rem;
+    color: #868e96;
+}
+
+.app-footer-contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.app-footer-item {
+    white-space: nowrap;
+}

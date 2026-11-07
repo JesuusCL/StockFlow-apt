@@ -1,8 +1,45 @@
+from decimal import Decimal, InvalidOperation
+
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField, FileAllowed
 from wtforms import StringField, TextAreaField, SelectField, DecimalField, IntegerField, SubmitField
 from wtforms.validators import DataRequired, Length, Optional, NumberRange, ValidationError
 
 from models.producto import Producto
+
+EXTENSIONES_IMAGEN_PERMITIDAS = ['jpg', 'jpeg', 'png', 'webp']
+
+
+class PrecioField(DecimalField):
+    """
+    Campo de precio en pesos chilenos. Acepta el formato con que se escribe en
+    Chile: el punto separa los miles ("30.000" = treinta mil) y la coma, si se
+    usa, separa decimales ("30,5"). Tambien acepta "30000" y "$30.000".
+    Sin esto, "30.000" se leia como 30 (punto decimal) y el precio quedaba mal.
+    """
+
+    def process_formdata(self, valuelist):
+        if not valuelist:
+            return
+        texto = valuelist[0].strip().replace('$', '').replace(' ', '')
+        texto = texto.replace('.', '').replace(',', '.')
+        try:
+            self.data = Decimal(texto)
+        except (InvalidOperation, ValueError):
+            self.data = None
+            raise ValueError(self.gettext('Ingresa un precio valido (ejemplo: 30.000).'))
+
+    def _value(self):
+        # Al editar, el valor se muestra sin ".00": 30000 (no 30000.00), para que
+        # al guardar de nuevo no se vuelva a interpretar mal.
+        if self.raw_data:
+            return self.raw_data[0]
+        if self.data is None:
+            return ''
+        entero = self.data.to_integral_value()
+        if self.data == entero:
+            return str(int(entero))
+        return str(self.data).replace('.', ',')
 
 
 class ProductoForm(FlaskForm):
@@ -18,22 +55,29 @@ class ProductoForm(FlaskForm):
         'SKU / Codigo',
         validators=[DataRequired(message='El SKU es obligatorio.'), Length(max=50)]
     )
+    imagen = FileField(
+        'Foto del producto (opcional)',
+        validators=[
+            FileAllowed(
+                EXTENSIONES_IMAGEN_PERMITIDAS,
+                'Solo se permiten imagenes (jpg, png o webp).'
+            )
+        ]
+    )
     id_categoria = SelectField(
         'Categoria (opcional)',
         coerce=int,
         validators=[Optional()]
     )
-    precio_compra = DecimalField(
+    precio_compra = PrecioField(
         'Precio de compra',
         validators=[DataRequired(message='El precio de compra es obligatorio.'),
-                    NumberRange(min=0, message='No puede ser negativo.')],
-        places=2
+                    NumberRange(min=0, message='No puede ser negativo.')]
     )
-    precio_venta = DecimalField(
+    precio_venta = PrecioField(
         'Precio de venta',
         validators=[DataRequired(message='El precio de venta es obligatorio.'),
-                    NumberRange(min=0, message='No puede ser negativo.')],
-        places=2
+                    NumberRange(min=0, message='No puede ser negativo.')]
     )
     stock_minimo = IntegerField(
         'Stock minimo (alerta de stock bajo)',

@@ -1,0 +1,100 @@
+===========================================================
+StockFlow - Login con codigo por correo + alerta de stock bajo
+===========================================================
+
+QUE HACE
+--------
+1) Login en dos pasos: correo + contrasena, y despues un codigo de 6 digitos
+   que llega al correo de la cuenta (vence en 5 minutos, 5 intentos, boton
+   "Reenviar codigo" con espera de 60 segundos).
+2) Stock bajo:
+   - Aviso abajo a la derecha: titulo "Stock bajo" y mensaje "Revisa el stock".
+     Se consulta cada 5 minutos mientras tengas el sitio abierto.
+   - Correo con el resumen de productos bajo el minimo, maximo 1 por hora
+     por empresa (para no llenar la bandeja). Llega al correo de la cuenta
+     y a los correos extra que configures (ver paso 3).
+
+PASO A PASO
+-----------
+1. BASE DE DATOS
+   Abre MySQL Workbench y ejecuta database_scripts/05_autenticacion_2fa_y_alertas_stock.sql
+   (crea 2 tablas nuevas; no toca las existentes).
+
+2. COPIAR ARCHIVOS (carpeta del ZIP -> misma carpeta de tu proyecto)
+   Reemplazar completos (son tus mismos archivos con los cambios):
+     config.py
+     forms/auth_forms.py
+     routes/auth.py
+     routes/inventario.py
+     templates/base.html
+   Archivos NUEVOS (copiar tal cual):
+     models/codigo_verificacion.py
+     models/alerta_stock_envio.py
+     services/email_service.py
+     services/autenticacion_service.py
+     services/alertas_stock_service.py
+     templates/verificar_codigo.html
+     static/css/stock_alert.css
+     static/js/stock_alert.js
+     tests/test_2fa.py
+     tests/test_alertas_stock.py
+   OJO: templates/base.html fue tomado de TU archivo actual en el PC; solo se
+   le agregaron 3 lineas (CSS, un div y el script del aviso). Si despues
+   cambias el pie de pagina, no pierdas esas 3 lineas.
+
+3. CONFIGURAR EL CORREO (archivo .env, en la raiz del proyecto)
+   Agrega estas lineas:
+
+     MAIL_SERVER=smtp.gmail.com
+     MAIL_PORT=587
+     MAIL_USERNAME=tu_cuenta_remitente@gmail.com
+     MAIL_PASSWORD=la_contrasena_de_aplicacion_de_16_letras
+     # Opcional: otros correos que tambien reciben la alerta de stock bajo
+     ALERTA_STOCK_CORREOS_EXTRA=
+     # Opcional: cada cuantos minutos como maximo se manda el correo de stock bajo
+     ALERTA_STOCK_CORREO_MINUTOS=60
+
+   Como obtener la contrasena de aplicacion de Gmail:
+     Cuenta de Google > Seguridad > activar "Verificacion en 2 pasos" >
+     "Contrasenas de aplicaciones" > crear una (16 letras, sin espacios).
+     NO uses la contrasena normal de la cuenta, y NO subas el .env a Git
+     (ya deberia estar en tu .gitignore).
+   Los correos salen DESDE esa cuenta Gmail y llegan A los correos de los
+   usuarios del sistema.
+
+   Si dejas MAIL_USERNAME vacio, no se envia nada real: el codigo y las
+   alertas se IMPRIMEN en la terminal de Flask. Sirve para probar el flujo
+   ahora mismo sin configurar Gmail.
+
+4. TU CUENTA DE PRUEBA
+   El codigo se envia al correo con que esta registrada la cuenta. Para
+   probar con je.oyarzunr@duocuc.cl, registra tu cuenta con ese correo, o
+   cambialo en MySQL Workbench:
+     UPDATE usuarios SET correo = 'je.oyarzunr@duocuc.cl'
+     WHERE nombre_usuario = 'TU_NOMBRE_DE_USUARIO';
+
+5. REINICIAR Flask y Ctrl+F5 en el navegador.
+
+COMO PROBARLO
+-------------
+- Login: cierra sesion, ingresa correo+contrasena -> debe pedirte el codigo
+  -> revisa tu correo (o la terminal de Flask si no configuraste Gmail).
+- Stock bajo: entra con un producto cuyo stock sea <= stock minimo. El aviso
+  aparece al cargar la pagina y se repite cada 5 minutos. Para repetir la
+  prueba sin esperar: abre una pestana nueva (el contador es por pestana).
+  El correo se envia con la primera consulta y despues como maximo 1 por
+  hora; para probar rapido pon ALERTA_STOCK_CORREO_MINUTOS=1 en el .env.
+- Pruebas automaticas: en la terminal del proyecto ejecuta  pytest
+  (nuevas: tests/test_2fa.py y tests/test_alertas_stock.py).
+
+OTRAS NOTAS
+-----------
+- Para desactivar el codigo por correo (por ejemplo en una demo de emergencia):
+  LOGIN_2FA_ENABLED=false en el .env. Por defecto esta activado.
+- En las pruebas automaticas existentes el codigo esta desactivado (TestConfig),
+  para que sigan funcionando como antes. Si algun test de login falla,
+  revisa que tu tests/conftest.py use TestConfig.
+- La redireccion "next" despues del login ahora solo acepta rutas internas
+  del sitio (mejora de seguridad).
+- El registro de cuenta nueva sigue entrando directo (no pide codigo, porque
+  ahi todavia no se verifica el correo). Si lo quieres, se puede agregar.

@@ -1,0 +1,207 @@
+/* ============================================================
+   Paginas con fondo azul (mismo tono del panel lateral) y
+   tarjetas con efecto 3D: Agregar producto, Entrada de stock
+   y Mi perfil.
+   Solo se activan en las paginas que lo piden con
+   {% block main_class %}app-content-navy{% endblock %}
+   ============================================================ */
+
+/* Fondo: mismo azul del panel izquierdo y ocupa todo el alto disponible */
+.app-content.app-content-navy {
+    flex: 1;
+    background-color: var(--color-sidebar);
+    padding-top: 2.25rem;
+}
+
+/* Tarjeta con volumen: degradado suave, borde superior luminoso,
+   "canto" inferior (grosor) y sombra profunda debajo */
+.card-3d {
+    background: linear-gradient(180deg, #ffffff 0%, #edf1fa 100%);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    box-shadow:
+        inset 0 1px 0 #ffffff,
+        inset 0 -3px 0 rgba(22, 35, 62, 0.08),
+        0 6px 0 #a9b6d6,
+        0 14px 20px rgba(0, 0, 0, 0.35),
+        0 30px 55px rgba(0, 0, 0, 0.40);
+    margin-bottom: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+@media (hover: hover) {
+    .card-3d:hover {
+        transform: translateY(-3px);
+        box-shadow:
+            inset 0 1px 0 #ffffff,
+            inset 0 -3px 0 rgba(22, 35, 62, 0.08),
+            0 9px 0 #a9b6d6,
+            0 20px 26px rgba(0, 0, 0, 0.38),
+            0 38px 65px rgba(0, 0, 0, 0.42);
+    }
+}
+
+/* Enlaces sueltos sobre el fondo azul (ej. "Volver al dashboard") */
+.link-claro {
+    color: #cfe0ff;
+}
+
+.link-claro:hover {
+    color: #ffffff;
+}
+
+/* ------------------------------------------------------------
+   Barra superior y pie de pagina en el mismo azul, para que
+   no queden franjas blancas en estas paginas
+   ------------------------------------------------------------ */
+.app-main-navy {
+    background-color: var(--color-sidebar);
+}
+
+.app-main-navy .app-topbar,
+.app-main-navy .app-footer {
+    background-color: var(--color-sidebar);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Boton de usuario (arriba a la derecha) en version clara */
+.app-main-navy .app-topbar .btn-outline-dark {
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.25);
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+.app-main-navy .app-topbar .btn-outline-dark:hover,
+.app-main-navy .app-topbar .btn-outline-dark.show {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.app-main-navy .app-topbar .btn-outline-dark .text-muted {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Textos del pie de pagina */
+.app-main-navy .app-footer-content {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.app-main-navy .app-footer-brand strong {
+    color: #ffffff;
+}
+
+.app-main-navy .app-footer-tagline {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* ------------------------------------------------------------
+   Lineas en azul fuerte (el del item activo del menu) en todas
+   las paginas internas: bordes de tarjetas, buscadores, selects,
+   listas y botones con contorno.
+   Las tarjetas 3D y las de productos tienen su propio estilo.
+   ------------------------------------------------------------ */
+.app-main .card:not(.card-3d):not(.producto-card):not(.border-warning) {
+    border: 1.5px solid var(--color-accent);
+    box-shadow: 0 4px 14px rgba(47, 95, 224, 0.10);
+}
+
+.app-main .form-control,
+.app-main .form-select {
+    border: 1.5px solid var(--color-accent);
+}
+
+.app-main .form-control:focus,
+.app-main .form-select:focus {
+    border-color: var(--color-accent-hover);
+    box-shadow: 0 0 0 3px rgba(47, 95, 224, 0.20);
+}
+
+.app-main .list-group:not(.list-group-flush) {
+    border: 1.5px solid var(--color-accent);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.app-main .btn-outline-dark,
+.app-main .btn-outline-secondary {
+    border: 1.5px solid var(--color-accent);
+}
+
+.app-main .btn-outline-dark:hover,
+.app-main .btn-outline-dark.active,
+.app-main .btn-outline-secondary:hover {
+    color: #ffffff;
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+}
+
+/* ------------------------------------------------------------
+   Tarjetas del listado de Productos: azul fuerte (el del
+   item activo del menu), textos en blanco y volumen 3D
+   ------------------------------------------------------------ */
+.producto-card {
+    background: linear-gradient(180deg, #3a6af0 0%, var(--color-accent) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 14px;
+    color: #ffffff;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.25),
+        0 5px 0 #1c3f9e,
+        0 12px 18px rgba(22, 35, 62, 0.25),
+        0 22px 40px rgba(22, 35, 62, 0.22) !important;
+}
+
+@media (hover: hover) {
+    .producto-card:hover {
+        transform: translateY(-3px);
+        box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.25),
+            0 8px 0 #1c3f9e,
+            0 18px 24px rgba(22, 35, 62, 0.30),
+            0 30px 50px rgba(22, 35, 62, 0.26) !important;
+    }
+}
+
+/* Separacion entre la foto y el contenido */
+.producto-card .producto-card-img,
+.producto-card .producto-card-img-placeholder {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.producto-card .card-body,
+.producto-card h2 {
+    color: #ffffff;
+}
+
+.producto-card .text-muted {
+    color: rgba(255, 255, 255, 0.82) !important;
+}
+
+.producto-card .producto-card-precio {
+    color: #ffffff;
+}
+
+/* Botones en version clara sobre el azul */
+.producto-card .btn-outline-secondary {
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.55);
+}
+
+.producto-card .btn-outline-secondary:hover {
+    color: var(--color-accent);
+    background-color: #ffffff;
+    border-color: #ffffff;
+}
+
+.producto-card .btn-outline-danger {
+    color: #ffffff;
+    background-color: rgba(220, 53, 69, 0.85);
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
+.producto-card .btn-outline-danger:hover {
+    color: #ffffff;
+    background-color: #dc3545;
+    border-color: #dc3545;
+}

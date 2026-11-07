@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired, Email, Length, EqualTo, ValidationError
+from wtforms.validators import DataRequired, Email, Length, EqualTo, ValidationError, Regexp
 
 from models.usuario import Usuario
 
@@ -77,3 +77,12 @@ class RestablecerPasswordForm(FlaskForm):
                     EqualTo('password', message='Las contrasenas no coinciden.')]
     )
     submit = SubmitField('Restablecer contrasena')
+
+
+class CodigoVerificacionForm(FlaskForm):
+    codigo = StringField(
+        'Codigo de verificacion',
+        validators=[DataRequired(message='Ingresa el codigo que te enviamos.'),
+                    Regexp(r'^\s*\d{6}\s*$', message='El codigo tiene 6 digitos.')]
+    )
+    submit = SubmitField('Verificar y entrar')

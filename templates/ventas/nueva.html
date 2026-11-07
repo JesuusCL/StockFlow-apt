@@ -29,7 +29,7 @@
     <div class="card shadow-sm mb-4" style="max-width: 320px;">
         <div class="card-body d-flex justify-content-between">
             <span class="fw-bold">Total</span>
-            <span class="fw-bold" id="total-venta">$0.00</span>
+            <span class="fw-bold" id="total-venta">$0</span>
         </div>
     </div>
 
@@ -55,8 +55,8 @@
             </select>
         </td>
         <td><input type="number" name="cantidad[]" class="form-control input-cantidad" min="1" value="1" required></td>
-        <td class="precio-unitario">$0.00</td>
-        <td class="subtotal-fila">$0.00</td>
+        <td class="precio-unitario">$0</td>
+        <td class="subtotal-fila">$0</td>
         <td><button type="button" class="btn btn-sm btn-outline-danger btn-quitar-fila">&times;</button></td>
     </tr>
 </template>
@@ -67,7 +67,7 @@ const plantilla = document.getElementById('plantilla-fila');
 const totalVentaEl = document.getElementById('total-venta');
 
 function formatearMoneda(valor) {
-    return '$' + valor.toFixed(2);
+    return '$' + String(Math.round(valor)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
 
 function recalcularFila(fila) {

@@ -1,10 +1,12 @@
 {% extends 'base.html' %}
 {% block title %}Mi perfil - StockPyme{% endblock %}
 
+{% block main_class %}app-content-navy{% endblock %}
+
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-6">
-        <div class="card shadow-sm mb-4">
+        <div class="card card-3d mb-4">
             <div class="card-body p-4">
                 <h1 class="h4 mb-4">Mi perfil</h1>
                 <dl class="row mb-0">
@@ -21,7 +23,7 @@
         </div>
 
         {% if current_user.empresa %}
-        <div class="card shadow-sm">
+        <div class="card card-3d">
             <div class="card-body p-4">
                 <h2 class="h5 mb-4">Mi empresa</h2>
                 <dl class="row mb-0">
@@ -42,7 +44,7 @@
         {% endif %}
 
         <div class="text-center mt-4">
-            <a href="{{ url_for('dashboard.index') }}">Volver al dashboard</a>
+            <a href="{{ url_for('dashboard.index') }}" class="link-claro">Volver al dashboard</a>
         </div>
     </div>
 </div>

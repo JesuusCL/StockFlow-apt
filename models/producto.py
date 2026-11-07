@@ -12,6 +12,7 @@ class Producto(db.Model):
     nombre = db.Column(db.String(150), nullable=False)
     descripcion = db.Column(db.Text, nullable=True)
     sku = db.Column(db.String(50), nullable=False)
+    imagen = db.Column(db.String(255), nullable=True)
     precio_compra = db.Column(db.Numeric(10, 2), nullable=False, default=0)
     precio_venta = db.Column(db.Numeric(10, 2), nullable=False, default=0)
     stock_actual = db.Column(db.Integer, nullable=False, default=0)

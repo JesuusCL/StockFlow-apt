@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}Resultado de carga - StockFlow{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h4 mb-0">Resultado de la carga</h1>
+    <div class="d-flex gap-2">
+        <a href="{{ url_for('productos.carga_masiva') }}" class="btn btn-outline-dark">Nueva carga</a>
+        <a href="{{ url_for('productos.listar') }}" class="btn btn-dark">Ver productos</a>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card"><div class="card-body">
+            <p class="text-muted mb-1 small">Archivo</p>
+            <p class="h6 mb-0">{{ carga.nombre_archivo }}</p>
+        </div></div>
+    </div>
+    <div class="col-md-2">
+        <div class="card"><div class="card-body">
+            <p class="text-muted mb-1 small">Total filas</p>
+            <p class="h4 mb-0">{{ carga.total_filas }}</p>
+        </div></div>
+    </div>
+    <div class="col-md-3">
+        <div class="card"><div class="card-body">
+            <p class="text-muted mb-1 small">Creados con exito</p>
+            <p class="h4 mb-0 text-success">{{ carga.filas_exitosas }}</p>
+        </div></div>
+    </div>
+    <div class="col-md-3">
+        <div class="card"><div class="card-body">
+            <p class="text-muted mb-1 small">Con error</p>
+            <p class="h4 mb-0 {{ 'text-danger' if carga.filas_con_error else '' }}">{{ carga.filas_con_error }}</p>
+        </div></div>
+    </div>
+</div>
+
+{% if carga.errores %}
+<div class="card">
+    <div class="table-responsive">
+        <table class="table align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>Fila del archivo</th>
+                    <th>Motivo del error</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for error in carga.errores %}
+                <tr>
+                    <td>{{ error.numero_fila }}</td>
+                    <td>{{ error.motivo_error }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<p class="text-muted small mt-3">Corrige estas filas en tu archivo original y vuelve a cargarlo — las filas que ya se crearon no se duplicaran si cambias el SKU de las corregidas.</p>
+{% else %}
+<div class="empty-state">
+    <p>Todas las filas se cargaron correctamente. No hay errores que revisar.</p>
+</div>
+{% endif %}
+{% endblock %}
