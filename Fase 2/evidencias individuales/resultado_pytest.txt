@@ -1,0 +1,46 @@
+============================= test session starts =============================
+platform win32 -- Python 3.14.5, pytest-8.3.3, pluggy-1.7.0 -- C:\Users\gaboa\AppData\Local\Python\pythoncore-3.14-64\python.exe
+rootdir: c:\Users\gaboa\Documents\StockFlow-apt
+configfile: pytest.ini
+testpaths: tests
+collecting ... collected 36 items
+
+tests/test_2fa.py::test_contrasena_correcta_no_inicia_sesion_hasta_ingresar_el_codigo PASSED [  2%]
+tests/test_2fa.py::test_codigo_correcto_inicia_sesion PASSED             [  5%]
+tests/test_2fa.py::test_codigo_incorrecto_no_inicia_sesion PASSED        [  8%]
+tests/test_2fa.py::test_el_codigo_se_guarda_con_hash_y_no_en_texto_plano PASSED [ 11%]
+tests/test_2fa.py::test_tras_5_intentos_fallidos_el_codigo_correcto_ya_no_sirve PASSED [ 13%]
+tests/test_2fa.py::test_codigo_vencido_es_rechazado PASSED               [ 16%]
+tests/test_2fa.py::test_reenviar_inmediatamente_respeta_la_espera PASSED [ 19%]
+tests/test_2fa.py::test_reenviar_genera_codigo_nuevo_e_invalida_el_anterior PASSED [ 22%]
+tests/test_2fa.py::test_verificar_codigo_sin_pasar_por_el_login_redirige_al_login PASSED [ 25%]
+tests/test_2fa.py::test_credenciales_incorrectas_no_envian_codigo PASSED [ 27%]
+tests/test_2fa.py::test_la_redireccion_next_solo_acepta_rutas_internas PASSED [ 30%]
+tests/test_2fa.py::test_con_2fa_desactivado_el_login_es_directo PASSED   [ 33%]
+tests/test_alertas_stock.py::test_el_endpoint_requiere_sesion PASSED     [ 36%]
+tests/test_alertas_stock.py::test_devuelve_solo_los_productos_con_stock_bajo_de_la_empresa PASSED [ 38%]
+tests/test_alertas_stock.py::test_envia_un_correo_con_el_resumen PASSED  [ 41%]
+tests/test_alertas_stock.py::test_no_repite_el_correo_dentro_del_intervalo PASSED [ 44%]
+tests/test_alertas_stock.py::test_vuelve_a_enviar_pasado_el_intervalo PASSED [ 47%]
+tests/test_alertas_stock.py::test_incluye_los_correos_adicionales_configurados PASSED [ 50%]
+tests/test_alertas_stock.py::test_sin_productos_bajo_no_avisa_ni_envia_correo PASSED [ 52%]
+tests/test_auth.py::test_password_nunca_se_guarda_en_texto_plano PASSED  [ 55%]
+tests/test_auth.py::test_registro_exitoso_crea_usuario_y_redirige_a_configurar_empresa PASSED [ 58%]
+tests/test_auth.py::test_registro_rechaza_correo_duplicado PASSED        [ 61%]
+tests/test_auth.py::test_registro_rechaza_passwords_que_no_coinciden PASSED [ 63%]
+tests/test_auth.py::test_login_exitoso PASSED                            [ 66%]
+tests/test_auth.py::test_login_rechaza_password_incorrecta PASSED        [ 69%]
+tests/test_auth.py::test_ruta_privada_redirige_a_login_sin_sesion PASSED [ 72%]
+tests/test_inventario.py::test_entrada_stock_actualiza_producto_y_genera_movimiento PASSED [ 75%]
+tests/test_inventario.py::test_stock_bajo_se_resuelve_automaticamente_tras_entrada PASSED [ 77%]
+tests/test_productos.py::test_crear_producto_exitoso PASSED              [ 80%]
+tests/test_productos.py::test_producto_nuevo_empieza_con_stock_cero PASSED [ 83%]
+tests/test_productos.py::test_rechaza_sku_duplicado_en_la_misma_empresa PASSED [ 86%]
+tests/test_productos.py::test_rechaza_precio_venta_menor_a_precio_compra PASSED [ 88%]
+tests/test_productos.py::test_empresa_no_puede_acceder_a_producto_de_otra_empresa PASSED [ 91%]
+tests/test_ventas.py::test_venta_descuenta_stock_y_calcula_total_correctamente PASSED [ 94%]
+tests/test_ventas.py::test_venta_rechaza_stock_insuficiente_y_no_modifica_nada PASSED [ 97%]
+tests/test_ventas.py::test_venta_sin_productos_es_rechazada PASSED       [100%]
+
+- generated xml file: c:\Users\gaboa\Documents\Evidencias StockFlow\resultado_pytest.xml -
+====================== 36 passed, 167 warnings in 9.52s =======================
