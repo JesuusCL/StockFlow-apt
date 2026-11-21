@@ -49,3 +49,19 @@ def test_venta_sin_productos_es_rechazada(app, usuario_empresa):
     with app.app_context():
         with pytest.raises(ValueError):
             registrar_venta(usuario_empresa['id_empresa'], usuario_empresa['id_usuario'], [])
+
+
+def test_venta_con_producto_repetido_valida_la_cantidad_total(app, usuario_empresa):
+    with app.app_context():
+        producto = _crear_producto_directo(usuario_empresa['id_empresa'], 'V-003', stock_actual=5)
+
+        # Dos lineas de 3 unidades del mismo producto suman 6: supera el stock de 5
+        with pytest.raises(ValueError):
+            registrar_venta(
+                usuario_empresa['id_empresa'], usuario_empresa['id_usuario'],
+                [{'producto_id': producto.id_producto, 'cantidad': 3},
+                 {'producto_id': producto.id_producto, 'cantidad': 3}],
+            )
+
+        producto_actualizado = _db.session.get(Producto, producto.id_producto)
+        assert producto_actualizado.stock_actual == 5

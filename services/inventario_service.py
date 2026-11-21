@@ -8,7 +8,17 @@ def registrar_entrada(producto, cantidad, usuario_id, motivo=None):
     Aumenta el stock del producto y deja registro del movimiento.
     Ambas operaciones se confirman juntas (misma sesion de SQLAlchemy):
     si algo falla, no queda el stock actualizado sin su movimiento asociado.
+
+    Concurrencia: relee el producto con SELECT ... FOR UPDATE (bloqueo de fila)
+    para sumar sobre el stock vigente aunque al mismo tiempo se este
+    registrando una venta u otra entrada del mismo producto.
     """
+    producto = (Producto.query
+                .filter_by(id_producto=producto.id_producto)
+                .with_for_update()
+                .populate_existing()
+                .one())
+
     stock_anterior = producto.stock_actual
     producto.stock_actual = stock_anterior + cantidad
 
